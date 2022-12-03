@@ -26,6 +26,10 @@ func NewExtractor(start, end string) Extractor {
 	return &extractor{varStart: start, varEnd: end}
 }
 
+func ExtractorOf() Extractor {
+	return NewExtractor("${", "}")
+}
+
 func (e *extractor) Compile() (err error) {
 	if e.varStart == "" {
 		return MissStartFlagError

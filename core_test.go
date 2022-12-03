@@ -168,6 +168,17 @@ func TestParseImpl_Parse(t *testing.T) {
 			expect: "${id}test/001:/ssx:",
 		},
 		{
+			value: `${number}/test/${b_id}/:/ssx:`,
+			start: "${",
+			end:   "}",
+			vars: map[string]any{
+				"number": "${id}",
+				"b_id":   "001",
+				"id":     123,
+			},
+			expect: "123/test/001/:/ssx:",
+		},
+		{
 			value: `[:number]/test/[:b_id]/[:/ssx]`,
 			start: "[:",
 			end:   `]`,

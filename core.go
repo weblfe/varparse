@@ -34,13 +34,18 @@ func NewParser[K comparable, V any]() VarParse[K, V] {
 }
 
 func (p *parseImpl[K, V]) Parse(content string, extract ExtractHandler[K]) string {
-	values := extract(content)
-	for k, vk := range values {
-		vx, ok := p.vars[k]
-		if !ok {
-			continue
+	for {
+		values := extract(content)
+		if len(values) <= 0 {
+			break
 		}
-		content = strings.ReplaceAll(content, vk, fmt.Sprintf("%v", vx))
+		for k, vk := range values {
+			vx, ok := p.vars[k]
+			if !ok {
+				continue
+			}
+			content = strings.ReplaceAll(content, vk, fmt.Sprintf("%v", vx))
+		}
 	}
 	return content
 }
