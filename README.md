@@ -5,6 +5,9 @@ intro
    A parse dynamic variable templates lib
 
 ## install
+
+require go >=1.18
+
 ```shell
 go get github.com/weblfe/varparse
 ```
@@ -34,3 +37,13 @@ func main() {
 		fmt.Println(content)
 }
 ```
+
+## tool sites
+
+[regex tool site](https://regex101.com/)
+
+## development dependent on
+
+[testify](https://github.com/stretchr/testify)
+
+## license (MIT)
