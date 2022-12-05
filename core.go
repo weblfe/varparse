@@ -13,7 +13,7 @@ type VarParse[K comparable, V any] interface {
 
 type ExtractHandler[K comparable] func(string) map[K]string
 
-type parseImpl[K comparable, V any] struct {
+type parseImpl[K comparable, V fmt.Stringer] struct {
 	vars Kv[K, V]
 }
 
@@ -26,7 +26,7 @@ func (p *parseImpl[K, V]) Get(k K) V {
 	return p.vars.GetOr(k)
 }
 
-func NewParser[K comparable, V any]() VarParse[K, V] {
+func NewParser[K comparable, V fmt.Stringer]() VarParse[K, V] {
 	var impl = &parseImpl[K, V]{
 		vars: make(Kv[K, V]),
 	}
@@ -44,7 +44,7 @@ func (p *parseImpl[K, V]) Parse(content string, extract ExtractHandler[K]) strin
 			if !ok {
 				continue
 			}
-			content = strings.ReplaceAll(content, vk, fmt.Sprintf("%v", vx))
+			content = strings.ReplaceAll(content, vk, vx.String())
 		}
 	}
 	return content

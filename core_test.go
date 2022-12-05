@@ -1,17 +1,22 @@
 package varparse_test
 
 import (
+	"fmt"
 	"github.com/stretchr/testify/assert"
 	"github.com/weblfe/varparse"
+	"strings"
 	"testing"
 )
 
 func TestNewParser(t *testing.T) {
-	var p = varparse.NewParser[string, any]()
+	var p = varparse.NewParser[string, fmt.Stringer]()
 	p.Assign("test", varparse.NewValue("test你好"))
 	p.Assign("number", varparse.NewValue(1))
 	p.Assign("bool", varparse.NewValue(true))
 	extractor := func(s string) map[string]string {
+		if !strings.Contains(s, "${number}") && !strings.Contains(s, "${bool}") {
+			return nil
+		}
 		return map[string]string{
 			"number": "${number}",
 			"bool":   "${bool}",
@@ -57,8 +62,8 @@ func TestNewExtractor(t *testing.T) {
 			start: "$",
 			end:   "/",
 			expect: map[string]string{
-				"number": "$number",
-				"bool":   "$bool",
+				"number": "$number/",
+				"bool":   "$bool/",
 			},
 		},
 		{
@@ -75,8 +80,8 @@ func TestNewExtractor(t *testing.T) {
 			start: ":",
 			end:   "/",
 			expect: map[string]string{
-				"number": ":number",
-				"b_id":   ":b_id",
+				"number": ":number/",
+				"b_id":   ":b_id/",
 			},
 		},
 		{
@@ -189,11 +194,11 @@ func TestParseImpl_Parse(t *testing.T) {
 			expect: "[000]/test/111/[:/ssx]",
 		},
 	}
-	var p = varparse.NewParser[string, any]()
+	var p = varparse.NewParser[string, fmt.Stringer]()
 
 	for _, v := range cases {
 		for k, vx := range v.vars {
-			p.Assign(k, vx)
+			p.Assign(k, varparse.NewStr(vx))
 		}
 		t.Run("-"+v.value, func(t *testing.T) {
 			executor := varparse.NewExtractor(v.start, v.end)
